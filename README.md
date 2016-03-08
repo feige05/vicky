@@ -9,7 +9,7 @@ Vicky is not bundled with any middleware.
 ```
 #it will be in luarocks
 ```
-We can `vicky.lua` in you lib directory.
+We can put `vicky.lua` in your resty lib directory.
 
 ## Example
 `nginx.conf` demo
