@@ -49,7 +49,7 @@ http {
 `lua/init.lua`
 ```lua
 local vicky = require('resty.vicky')
--- as global variable
+-- as a global variable "app"
 app = vicky:new()
 -- using filters
 app:use("/user/:name",function(next,p)
@@ -58,7 +58,7 @@ app:use("/user/:name",function(next,p)
 end);
 
 -- filter for all method
-app['@all /user/x'] = function(next)
+app['@all /user'] = function(next)
 	ngx.say("hello")
 	next();
 end
@@ -77,9 +77,12 @@ app['/user/:name'] = function(params)
 	ngx.say("name:"..params.name);
 end
 
--- expreg path handle
+-- ExpReg path handle should start with "^"
 app['^/reg/(.*)$'] = function(params)
 	ngx.say(params[0]);
 end
 
 ```
+
+## License
+MIT
