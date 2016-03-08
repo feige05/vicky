@@ -1,2 +1,85 @@
 # vicky
 A restful framework for openresty.
+
+Expressive HTTP middleware for openresty to make web applications and APIs more enjoyable to write. Vicky's middleware stack flows in a stack-like manner, allowing you to perform actions downstream then filter and manipulate the response upstream.
+
+Vicky is not bundled with any middleware.
+
+## Installation
+```
+#it will be in luarocks
+```
+We can `vicky.lua` in you lib directory.
+
+## Example
+`nginx.conf` demo
+```
+http {
+	index index.html;
+	lua_package_path 'lua/?.lua;/blah/?.lua;;';
+	lua_code_cache off;
+	# init app
+	init_by_lua_file lua/init.lua;
+	server {
+        listen       2000;
+        server_name  localhost;
+        default_type text/html;
+        root public;
+        #config for lua-resty-template root dir
+        set $template_root lua/view;
+        #access_log  logs/host.access.log main;
+        location / {
+            try_files $uri $uri.html @lua;
+        }
+        #for index page
+        location = / {
+            try_files $uri $uri/ @lua;
+        }
+        location @lua {
+            content_by_lua 'app:handle()';
+        }
+        location /private {
+            internal;
+            alias private;
+        }
+    }
+}
+```
+
+`lua/init.lua`
+```lua
+local vicky = require('resty.vicky')
+-- as global variable
+app = vicky:new()
+-- using filters
+app:use("/user/:name",function(next,p)
+	ngx.say("/user/:name "..p.name)
+	next();
+end);
+
+-- filter for all method
+app['@all /user/x'] = function(next)
+	ngx.say("hello")
+	next();
+end
+
+-- handles. default method is get
+app['/test'] = function()
+	ngx.say("test");
+end
+
+app['post /hello'] = function()
+	ngx.exec('/private/hello.html')
+end
+
+-- named path handle
+app['/user/:name'] = function(params)
+	ngx.say("name:"..params.name);
+end
+
+-- expreg path handle
+app['^/reg/(.*)$'] = function(params)
+	ngx.say(params[0]);
+end
+
+```
