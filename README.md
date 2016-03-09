@@ -12,39 +12,6 @@ Vicky is not bundled with any middleware.
 We can put `vicky.lua` in your resty lib directory.
 
 ## Example
-`nginx.conf` demo
-```
-http {
-	index index.html;
-	lua_package_path 'lua/?.lua;/blah/?.lua;;';
-	lua_code_cache off;
-	# init app
-	init_by_lua_file lua/init.lua;
-	server {
-        listen       2000;
-        server_name  localhost;
-        default_type text/html;
-        root public;
-        #config for lua-resty-template root dir
-        set $template_root lua/view;
-        #access_log  logs/host.access.log main;
-        location / {
-            try_files $uri $uri.html @lua;
-        }
-        #for index page
-        location = / {
-            try_files $uri $uri/ @lua;
-        }
-        location @lua {
-            content_by_lua 'app:handle()';
-        }
-        location /private {
-            internal;
-            alias private;
-        }
-    }
-}
-```
 
 `lua/init.lua`
 ```lua
@@ -82,6 +49,37 @@ app['^/reg/(.*)$'] = function(params)
 	ngx.say(params[0]);
 end
 
+```
+
+`nginx.conf` demo
+```
+http {
+    index index.html;
+    lua_package_path 'lua/?.lua;/blah/?.lua;;';
+    lua_code_cache off;
+    # init app
+    init_by_lua_file lua/init.lua;
+    server {
+        listen       2000;
+        server_name  localhost;
+        default_type text/html;
+        root public;
+        location / {
+            try_files $uri $uri.html @lua;
+        }
+        #for index page
+        location = / {
+            try_files /index.html @lua;
+        }
+        location @lua {
+            content_by_lua 'app:handle()';
+        }
+        location /private {
+            internal;
+            alias private;
+        }
+    }
+}
 ```
 
 ## License

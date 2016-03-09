@@ -60,7 +60,7 @@ end
 -- eg. /user/:id -> ^/user/(?<id>\w+)$
 function _M.trans_named_path(path)
 	local new_path = '^'..string_gsub(path,":%w+" , function(n) return '(?<'..string_sub(n ,2)..'>\\w+)'  end)..'$'
-	ngx.log(ngx.ERR ,path," -> ",new_path)
+	--ngx.log(ngx.ERR ,path," -> ",new_path)
 	return new_path
 end
 
@@ -68,7 +68,7 @@ function _M:set_methods()
 	for m,_ in pairs(METHODS) do
 		local method = string_lower(m);
 		self[method] = function(self,path,fn)
-			ngx.log(ngx.ERR, 'add '.. self.method_path(method,path))
+			--ngx.log(ngx.ERR, 'add '.. self.method_path(method,path))
 			if string_byte('^') == string_byte(path) then	-- regexp path eg. ^/user/(\d)+/$
 				table_insert(self.ex_handles,{handle=fn,method=method,pattern=path})
 			elseif nil ~= string_find(path , ':') then		-- named path eg. /user/:id
