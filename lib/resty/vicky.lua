@@ -39,8 +39,8 @@ function _M:new()
 		ex_handles = {},
 		-- if not handle find this function will be called at last if not nil
 		unhandle = function() ngx.exit(404) end,
-		-- if handle encount an exeption ,errorHandle will be called
-		errorHandle = function()end
+		-- if handle encount an exeption ,error_handle will be called
+		error_handle = function()end
 	}
 	setmetatable(o,self)
 	self.__index = self
@@ -158,7 +158,7 @@ function _M:do_filters(handle,pathParams)
 end
 
 function _M:exe_handle(handle , params)
-	xpcall(handle,function(e) ngx.log(ngx.ERR, debug.traceback());if 'function' == type(self.errorHandle) then self.errorHandle(e) end end ,params)
+	xpcall(handle,function(e) ngx.log(ngx.ERR, debug.traceback());if 'function' == type(self.error_handle) then self.error_handle(e) end end ,params)
 end
 
 -- handle the request
