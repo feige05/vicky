@@ -81,6 +81,11 @@ http {
     }
 }
 ```
-
+## Supports
+**Nginx API for Lua:** [lua-nginx-module](https://github.com/openresty/lua-nginx-module#nginx-api-for-lua)  
+**Awesome resty:** [awesome resty](https://github.com/bungle/awesome-resty)  
+**Cookie:** [lua-resty-cookie](https://github.com/cloudflare/lua-resty-cookie)  
+**Session:** [lua-resty-session](https://github.com/bungle/lua-resty-session)  
+**Template:** [lua-resty-template](https://github.com/bungle/lua-resty-template)
 ## License
 MIT
