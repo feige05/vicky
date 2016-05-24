@@ -20,7 +20,12 @@ local vicky = require('resty.vicky')
 app = vicky:new()
 -- using filters
 app:use("/user/:name",function(next,p)
-	ngx.say("/user/:name "..p.name)
+    ngx.say("/user/:name "..p.name)
+    next();
+end);
+
+app:use("/user/:name",function(next,p)
+	ngx.say("/user/:name filter 2 "..p.name)
 	next();
 end);
 
