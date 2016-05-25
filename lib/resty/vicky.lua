@@ -211,7 +211,7 @@ end
 function _M.__newindex(t, k, v)
     local h = string_byte(k)
     if string_byte('/') == h then -- / handle
-        t:get(k, v)
+        t:all(k, v)
         return
     end
     if string_byte('*') == h then -- * all handle
@@ -219,12 +219,12 @@ function _M.__newindex(t, k, v)
         return
     end
     if string_byte('^') == h then -- * all handle
-        t:get(k, v)
+        t:all(k, v)
         return
     end
     if string_byte('@') == h then -- add filter eg. @ fn or @/path fn or @get /path
         if 1 == h then
-            t:use(v)
+            t.all(t,'^.*$',v)
             return
         end
         local mp = string_sub(k,2)
@@ -232,10 +232,10 @@ function _M.__newindex(t, k, v)
         if spIndex then
             local method = string_lower(string_sub(mp,1,spIndex-1))
             if METHODS[method] then
-                t:use(method , string_lower(string_sub(mp,spIndex+1)),v)
+                t[method](t,string_lower(string_sub(mp,spIndex+1)),v)
             end
         else
-            t:use(mp,v)
+            t.all(t,mp,v)
         end
         return
     end
@@ -244,8 +244,8 @@ function _M.__newindex(t, k, v)
     if i then                   -- method handle
         local m = string_lower(string_sub(k , 1 , i-1))
         local p = string_lower(string_sub(k ,i+1))
-        if METHODS[m] and string_byte('/') == string_byte(p) then 
-            t[m](t,p , v)
+        if METHODS[m] then 
+            t[m](t, p , v)
         end
         return
     end
